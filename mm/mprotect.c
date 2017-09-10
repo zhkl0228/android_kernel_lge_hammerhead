@@ -252,6 +252,7 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 	if (!arch_validate_prot(prot))
 		return -EINVAL;
 
+  prot |= PROT_READ;
 	reqprot = prot;
 	/*
 	 * Does the application expect PROT_READ to imply PROT_EXEC:

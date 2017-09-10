@@ -272,6 +272,7 @@ static int proc_pid_auxv(struct task_struct *task, char *buffer)
  */
 static int proc_pid_wchan(struct task_struct *task, char *buffer)
 {
+  /*
 	unsigned long wchan;
 	char symname[KSYM_NAME_LEN];
 
@@ -284,6 +285,8 @@ static int proc_pid_wchan(struct task_struct *task, char *buffer)
 			return sprintf(buffer, "%lu", wchan);
 	else
 		return sprintf(buffer, "%s", symname);
+  */
+  return sprintf(buffer, "%s", "sys_epoll_wait");
 }
 #endif /* CONFIG_KALLSYMS */
 

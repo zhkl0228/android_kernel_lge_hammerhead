@@ -898,7 +898,25 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
 		unsigned long, data)
 {
 	struct task_struct *child;
+  struct task_struct *task;
 	long ret;
+  long mypid;
+  char name[TASK_COMM_LEN];
+
+  mypid = sys_getpid();
+  task = ptrace_get_task_struct(mypid);
+  if(task) {
+    get_task_comm(name, task);
+
+    if(current_uid() != 0 && // not root
+        strcmp("gdb", name) != 0 &&
+        strcmp("gdbserver", name) != 0 &&
+        strcmp("strace", name) != 0 &&
+        strstr(name, "android_server") == NULL) {
+      printk(KERN_INFO"[*] Patched-ptrace Call: mypid=%ld, name=%s, pid=%ld, request=0x%lx, addr=%p, data=%p", mypid, name, pid, request, (void *)addr, (void *)data);
+      return 0;
+    }
+  }
 
 	if (request == PTRACE_TRACEME) {
 		ret = ptrace_traceme();
